@@ -25,5 +25,4 @@ class Decoration extends Model
     {
         return $this->hasMany(Opinion::class);
     }
-
 }

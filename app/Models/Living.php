@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Living extends Model
 {
     use HasFactory;
-    protected $fillable = ['name_living', 'description_living', 'price_living', 'categorie_living_id'];
+    protected $fillable = ['name_living', 'description_living', 'price_living', 'categorie_living_id', 'picture_living'];
 
     public function projects()
     {
@@ -26,4 +26,3 @@ class Living extends Model
         return $this->hasMany(Opinion::class);
     }
 }
-

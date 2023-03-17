@@ -6,8 +6,8 @@ use App\Models\Decoration;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Categorie_decoration;
-use App\Models\Categorie_material;
 use Illuminate\Support\Facades\DB;
+
 
 class DecorationController extends Controller
 {
@@ -19,12 +19,9 @@ class DecorationController extends Controller
     public function index()
     {
         $decorations = DB::table('decorations')
-
             ->join('categorie_decorations', 'decorations.categorie_decoration_id', '=', 'categorie_decorations.id')
             ->select('decorations.*', 'categorie_decorations.name_categorie_decoration')
             ->get();
-
-
         return response()->json([
             'status' => 'Success',
             'data' => $decorations,
@@ -35,11 +32,10 @@ class DecorationController extends Controller
     {
         $categorie_decoration = DB::table('decorations')
             ->join('categorie_decorations', 'decorations.categorie_decoration_id', '=', 'categorie_decorations.id')
-            ->select('decorations.name_decoration')
+            ->select('decorations.*')
             ->where('categorie_decorations.id', '=', $categorie_decoration->id)
             ->get();
 
-        // On retourne les informations d'une fiche "enfant" en JSON
         return response()->json([
             'status' => 'Success',
             'data' => $categorie_decoration,
@@ -58,15 +54,30 @@ class DecorationController extends Controller
             'name_decoration' => 'required|max:100',
             'description_decoration' => 'required',
             'price_decoration' => 'required',
-            'picture_decoration' => 'required',
             'categorie_decoration_id' => 'required'
         ]);
+
+        $filename = "";
+        if ($request->hasFile('picture_decoration')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+            $filenameWithExt = $request->file('picture_decoration')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            //  On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('picture_decoration')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore : "jeanmiche_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('picture_decoration')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
+
         // On crée un nouvel utilisateur
         $decoration = Decoration::create([
             'name_decoration' => $request->name_decoration,
             'description_decoration' => $request->description_decoration,
             'price_decoration' => $request->price_decoration,
-            'picture_decoration' => $request->picture_decoration,
+            'picture_decoration' => $filename,
             'categorie_decoration_id' => $request->categorie_decoration_id
         ]);
 
@@ -101,16 +112,35 @@ class DecorationController extends Controller
             'name_decoration' => 'required|max:100',
             'description_decoration' => 'required',
             'price_decoration' => 'required',
-            'picture_decoration' => 'required',
             'categorie_decoration_id' => 'required',
-
         ]);
+
+
+
+        $filename = "";
+
+        if ($request->hasFile('picture_decoration')) {
+            // On récupère le nom du fichier avec son extension, résultat $filenameWithExt : "jeanmiche.jpg"
+            $filenameWithExt = $request->file('picture_decoration')->getClientOriginalName();
+            $filenameWithoutExt = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            //  On récupère l'extension du fichier, résultat $extension : ".jpg"
+            $extension = $request->file('picture_decoration')->getClientOriginalExtension();
+            // On créer un nouveau fichier avec le nom + une date + l'extension, résultat $fileNameToStore : "jeanmiche_20220422.jpg"
+            $filename = $filenameWithoutExt . '_' . time() . '.' . $extension;
+            // On enregistre le fichier à la racine /storage/app/public/uploads, ici la méthode storeAs défini déjà le chemin /storage/app
+            $path = $request->file('picture_decoration')->storeAs('public/uploads', $filename);
+        } else {
+            $filename = Null;
+        }
+
+
+
         // On crée un nouvel utilisateur
         $decoration->update([
             'name_decoration' => $request->name_decoration,
             'description_decoration' => $request->description_decoration,
             'price_decoration' => $request->price_decoration,
-            'picture_decoration' => $request->picture_decoration,
+            'picture_decoration' => $filename,
             'categorie_decoration_id' => $request->categorie_decoration_id,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
