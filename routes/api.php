@@ -78,6 +78,17 @@ Route::controller(LivingController::class)->group(function () {
 
 Route::apiResource('project', ProjectController::class);
 Route::get('project/user/{user}', [ProjectController::class, 'indexUser'])->name('indexUser');
+Route::get('project/living/{project}', [ProjectController::class, 'indexLiving'])->name('indexLiving');
+Route::get('project/material/{project}', [ProjectController::class, 'indexMaterial'])->name('indexMaterial');
+Route::get('project/decoration/{project}', [ProjectController::class, 'indexDecoration'])->name('indexDecoration');
+Route::delete('project/{project}/living/{living}', [ProjectController::class, 'destroyLiving'])->name('destroyLiving');
+Route::delete('project/{project}/material/{material}', [ProjectController::class, 'destroyMaterial'])->name('destroyMaterial');
+Route::delete('project/{project}/decoration/{decoration}', [ProjectController::class, 'destroyDecoration'])->name('destroyDecoration');
+
+
+
+
+
 Route::get('decoration/categorie/{categorie_decoration}', [DecorationController::class, 'indexCategorie'])->name('indexCategorie');
 Route::get('material/categorie/{categorie_material}', [MaterialController::class, 'indexCategorie'])->name('indexCategorie');
 Route::get('living/categorie/{categorie_living}', [LivingController::class, 'indexCategorie'])->name('indexCategorie');

@@ -31,7 +31,6 @@ class ProjectController extends Controller
 
     public function indexUser($id)
     {
-
         // if (Auth::user()->roles != 'ROLE_ADMIN') {
         //     abort(403, 'Action non autorisée.');
         // }
@@ -39,6 +38,60 @@ class ProjectController extends Controller
         $project = DB::table('projects')->where('projects.user_id', '=', $id)->get();
         // On retourne les informations des projets en JSON
         return response()->json($project);
+    }
+    public function indexLiving($id)
+    {
+        $project = Project::find($id);
+
+        if (!$project) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Project not found'
+            ], 404);
+        }
+
+        $project->load('livings');
+
+        return response()->json([
+            'status' => 'Success',
+            'data' => $project
+        ]);
+    }
+    public function indexMaterial($id)
+    {
+        $project = Project::find($id);
+
+        if (!$project) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Project not found'
+            ], 404);
+        }
+
+        $project->load('materials');
+
+        return response()->json([
+            'status' => 'Success',
+            'data' => $project
+        ]);
+    }
+    public function indexDecoration($id)
+    {
+        $project = Project::find($id);
+
+        if (!$project) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Project not found'
+            ], 404);
+        }
+
+        $project->load('decorations');
+
+        return response()->json([
+            'status' => 'Success',
+            'data' => $project
+        ]);
     }
 
 
@@ -87,29 +140,42 @@ class ProjectController extends Controller
         ]);
 
         // table pivot LIVING
+        // $livings[] = $request->living_id;
+        // if (!empty($livings)) {
+        //     for ($i = 0; $i < count($livings); $i++) {
+        //         $living = Living::find($livings[$i]);
+        //         $project->livings()->attach($living);
+        //     }
+        // }
+        // table pivot LIVING
         $livings[] = $request->living_id;
         if (!empty($livings)) {
-            for ($i = 0; $i < count($livings); $i++) {
-                $living = Living::find($livings[$i]);
-                $project->livings()->attach($living);
-            }
+            $project->livings()->syncWithoutDetaching($livings);
         }
         // table pivot MATERIAL
-        $materials[] = $request->material_id;
+        // $materials[] = $request->material_id;
+        // if (!empty($materials)) {
+        //     for ($i = 0; $i < count($materials); $i++) {
+        //         $material = Material::find($materials[$i]);
+        //         $project->materials()->attach($material);
+        //     }
+        // }
+        $materials = $request->input('material_id', []);
         if (!empty($materials)) {
-            for ($i = 0; $i < count($materials); $i++) {
-                $material = Material::find($materials[$i]);
-                $project->materials()->attach($material);
-            }
+            $project->materials()->syncWithoutDetaching($materials);
         }
 
         // table pivot DECORATION
-        $decorations[] = $request->decoration_id;
+        // $decorations[] = $request->decoration_id;
+        // if (!empty($decorations)) {
+        //     for ($i = 0; $i < count($decorations); $i++) {
+        //         $decoration = Decoration::find($decorations[$i]);
+        //         $project->decorations()->attach($decoration);
+        //     }
+        // }
+        $decorations = $request->input('decoration_id', []);
         if (!empty($decorations)) {
-            for ($i = 0; $i < count($decorations); $i++) {
-                $decoration = Decoration::find($decorations[$i]);
-                $project->decorations()->attach($decoration);
-            }
+            $project->decorations()->syncWithoutDetaching($decorations);
         }
 
         // On retourne les informations de caté en JSON
@@ -140,47 +206,43 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $this->validate($request, [
-            'title_project' => 'required|max:100',
-            'start_project' => 'required',
-        ]);
-        // On crée un nouvel projet
-        $project->update([
-            'title_project' => $request->title_project,
-            'start_project' => $request->start_project,
-        ]);
+        // $this->validate($request, [
+        //     'title_project' => 'required|max:100',
+        //     'start_project' => 'required',
+        // ]);
+        // // On crée un nouvel projet
+        // $project->update([
+        //     'title_project' => $request->title_project,
+        //     'start_project' => $request->start_project,
+        // ]);
 
         // Array à fournir pour la méthode sync
-        $updateTabId = array();
+        // $updateTabId = array();
 
         //Update living pivot
-        $livings = $request->living_id;
+        // $livings = $request->living_id;
+        // if (!empty($livings)) {
+        //     for ($i = 0; $i < count($livings); $i++) {
+        //         $living = Living::find($livings[$i]);
+        //         array_push($updateTabId, $living->id);
+        //     }
+        //     $project->livings()->sync($updateTabId);
+        // }
+        $livings = $request->input('living_id', []);
         if (!empty($livings)) {
-            for ($i = 0; $i < count($livings); $i++) {
-                $living = Living::find($livings[$i]);
-                array_push($updateTabId, $living->id);
-            }
-            $project->livings()->sync($updateTabId);
+            $project->livings()->syncWithoutDetaching($livings);
         }
 
         //Update material pivot
-        $materials = $request->material_id;
+        $materials = $request->input('material_id', []);
         if (!empty($materials)) {
-            for ($i = 0; $i < count($materials); $i++) {
-                $material = Material::find($materials[$i]);
-                array_push($updateTabId, $material->id);
-            }
-            $project->materials()->sync($updateTabId);
+            $project->materials()->syncWithoutDetaching($materials);
         }
 
         //Update decoration pivot
-        $decorations = $request->decoration_id;
+        $decorations = $request->input('decoration_id', []);
         if (!empty($decorations)) {
-            for ($i = 0; $i < count($decorations); $i++) {
-                $decoration = Decoration::find($decorations[$i]);
-                array_push($updateTabId, $decoration->id);
-            }
-            $project->decorations()->sync($updateTabId);
+            $project->decorations()->syncWithoutDetaching($decorations);
         }
 
         // On retourne les informations du nouvel utilisateur en JSON
@@ -202,6 +264,27 @@ class ProjectController extends Controller
         // On retourne la réponse JSON
         return response()->json([
             'status' => 'Supprimée avec succès'
+        ]);
+    }
+    public function destroyLiving(Project $project, Living $living)
+    {
+        $project->livings()->detach($living);
+        return response()->json([
+            'status' => 'Relation supprimée avec succès'
+        ]);
+    }
+    public function destroyMaterial(Project $project, Material $material)
+    {
+        $project->materials()->detach($material);
+        return response()->json([
+            'status' => 'Relation supprimée avec succès'
+        ]);
+    }
+    public function destroyDecoration(Project $project, Living $decoration)
+    {
+        $project->decorations()->detach($decoration);
+        return response()->json([
+            'status' => 'Relation supprimée avec succès'
         ]);
     }
 }
