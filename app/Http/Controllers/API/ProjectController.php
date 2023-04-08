@@ -8,6 +8,7 @@ use App\Models\Material;
 use App\Models\Decoration;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -49,14 +50,19 @@ class ProjectController extends Controller
                 'message' => 'Project not found'
             ], 404);
         }
-
-        $project->load('livings');
+        $project->load(['livings' => function ($query) use ($id) {
+            $query->select('livings.*', 'lp.living_quantity')
+                ->join('living_project as lp', 'lp.living_id', '=', 'livings.id')
+                ->where('lp.project_id', '=', $id);
+        }]);
 
         return response()->json([
             'status' => 'Success',
             'data' => $project
         ]);
     }
+
+
     public function indexMaterial($id)
     {
         $project = Project::find($id);
@@ -194,6 +200,45 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         return response()->json($project);
+    }
+
+
+
+    public function updateLivingQuantity(Request $request, $projectId, $livingId)
+    {
+        $newQuantity = $request->input('living_quantity');
+        $project = Project::findOrFail($projectId);
+        $living = Living::findOrFail($livingId);
+        $project->livings()->syncWithoutDetaching([
+            $living->id => ['living_quantity' => $newQuantity]
+        ]);
+        return response()->json([
+            'status' => 'Mise à jour avec succès'
+        ]);
+    }
+    public function updateMaterialQuantity(Request $request, $projectId, $materialId)
+    {
+        $newQuantity = $request->input('material_quantity');
+        $project = Project::findOrFail($projectId);
+        $material = Material::findOrFail($materialId);
+        $project->materials()->syncWithoutDetaching([
+            $material->id => ['material_quantity' => $newQuantity]
+        ]);
+        return response()->json([
+            'status' => 'Mise à jour avec succès'
+        ]);
+    }
+    public function updateDecorationQuantity(Request $request, $projectId, $decorationId)
+    {
+        $newQuantity = $request->input('decoration_quantity');
+        $project = Project::findOrFail($projectId);
+        $decoration = Decoration::findOrFail($decorationId);
+        $project->decorations()->syncWithoutDetaching([
+            $decoration->id => ['decoration_quantity' => $newQuantity]
+        ]);
+        return response()->json([
+            'status' => 'Mise à jour avec succès'
+        ]);
     }
 
 

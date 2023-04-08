@@ -84,9 +84,9 @@ Route::get('project/decoration/{project}', [ProjectController::class, 'indexDeco
 Route::delete('project/{project}/living/{living}', [ProjectController::class, 'destroyLiving'])->name('destroyLiving');
 Route::delete('project/{project}/material/{material}', [ProjectController::class, 'destroyMaterial'])->name('destroyMaterial');
 Route::delete('project/{project}/decoration/{decoration}', [ProjectController::class, 'destroyDecoration'])->name('destroyDecoration');
-
-
-
+Route::put('project/{project}/living/{living}/quantity', [ProjectController::class, 'updateLivingQuantity'])->name('updateLivingQuantity');
+Route::put('project/{project}/material/{material}/quantity', [ProjectController::class, 'updateMaterialQuantity'])->name('updateMaterialQuantity');
+Route::put('project/{project}/decoration/{decoration}/quantity', [ProjectController::class, 'updateDecorationQuantity'])->name('updateDecorationQuantity');
 
 
 Route::get('decoration/categorie/{categorie_decoration}', [DecorationController::class, 'indexCategorie'])->name('indexCategorie');

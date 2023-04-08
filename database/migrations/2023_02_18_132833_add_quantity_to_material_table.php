@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('living_project', function (Blueprint $table) {
-            $table->string('living_quantity')->default(1);;
+        Schema::table('material_project', function (Blueprint $table) {
+            $table->string('material_quantity')->default(1);
         });
     }
 
