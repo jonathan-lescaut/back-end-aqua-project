@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('decoration_project', function (Blueprint $table) {
-            $table->string('decoration_quantity')->default(1);;
+        Schema::table('livings', function (Blueprint $table) {
+            $table->boolean('quantity_editable_living')->default(true);
         });
     }
 

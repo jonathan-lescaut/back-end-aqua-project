@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Decoration extends Model
 {
     use HasFactory;
-    protected $fillable = ['name_decoration', 'description_decoration', 'price_decoration', 'picture_decoration', 'categorie_decoration_id'];
+    protected $fillable = ['name_decoration', 'description_decoration', 'price_decoration', 'picture_decoration', 'categorie_decoration_id', 'quantity_editable_decoration'];
 
     public function projects()
     {

@@ -56,7 +56,8 @@ class MaterialController extends Controller
             'description_material' => 'required',
             'price_material' => 'required',
             'picture_material' => 'required',
-            'categorie_material_id' => 'required'
+            'categorie_material_id' => 'required',
+            'quantity_editable_material' => 'required',
         ]);
 
         $filename = "";
@@ -80,6 +81,7 @@ class MaterialController extends Controller
             'price_material' => $request->price_material,
             'picture_material' => $filename,
             'categorie_material_id' => $request->categorie_material_id,
+            'quantity_editable_material' => $request->quantity_editable_material,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
@@ -113,6 +115,7 @@ class MaterialController extends Controller
             'description_material' => 'required',
             'price_material' => 'required',
             'categorie_material_id' => 'required',
+            'quantity_editable_material' => 'required',
         ]);
 
         $filename = "";
@@ -135,6 +138,7 @@ class MaterialController extends Controller
             'description_material' => $request->description_material,
             'price_material' => $request->price_material,
             'picture_material' => $filename,
+            'quantity_editable_material' => $request->quantity_editable_material,
             'categorie_material_id' => $request->categorie_material_id,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON

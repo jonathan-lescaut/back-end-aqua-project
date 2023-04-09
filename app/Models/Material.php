@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Material extends Model
 {
     use HasFactory;
-    protected $fillable = ['name_material', 'description_material', 'price_material', 'picture_material', 'categorie_material_id'];
+    protected $fillable = ['name_material', 'description_material', 'price_material', 'picture_material', 'categorie_material_id', 'quantity_editable_material'];
 
     public function projects()
     {
@@ -25,5 +25,4 @@ class Material extends Model
     {
         return $this->hasMany(Opinion::class);
     }
-
 }

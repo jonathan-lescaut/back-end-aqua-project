@@ -74,7 +74,11 @@ class ProjectController extends Controller
             ], 404);
         }
 
-        $project->load('materials');
+        $project->load(['materials' => function ($query) use ($id) {
+            $query->select('materials.*', 'lp.material_quantity')
+                ->join('material_project as lp', 'lp.material_id', '=', 'materials.id')
+                ->where('lp.project_id', '=', $id);
+        }]);
 
         return response()->json([
             'status' => 'Success',
@@ -92,7 +96,11 @@ class ProjectController extends Controller
             ], 404);
         }
 
-        $project->load('decorations');
+        $project->load(['decorations' => function ($query) use ($id) {
+            $query->select('decorations.*', 'lp.decoration_quantity')
+                ->join('decoration_project as lp', 'lp.decoration_id', '=', 'decorations.id')
+                ->where('lp.project_id', '=', $id);
+        }]);
 
         return response()->json([
             'status' => 'Success',
@@ -325,7 +333,7 @@ class ProjectController extends Controller
             'status' => 'Relation supprimée avec succès'
         ]);
     }
-    public function destroyDecoration(Project $project, Living $decoration)
+    public function destroyDecoration(Project $project, Decoration $decoration)
     {
         $project->decorations()->detach($decoration);
         return response()->json([

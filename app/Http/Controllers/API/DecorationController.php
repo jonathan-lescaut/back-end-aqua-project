@@ -54,7 +54,8 @@ class DecorationController extends Controller
             'name_decoration' => 'required|max:100',
             'description_decoration' => 'required',
             'price_decoration' => 'required',
-            'categorie_decoration_id' => 'required'
+            'categorie_decoration_id' => 'required',
+            'quantity_editable_decoration' => 'required',
         ]);
 
         $filename = "";
@@ -78,9 +79,9 @@ class DecorationController extends Controller
             'description_decoration' => $request->description_decoration,
             'price_decoration' => $request->price_decoration,
             'picture_decoration' => $filename,
-            'categorie_decoration_id' => $request->categorie_decoration_id
+            'categorie_decoration_id' => $request->categorie_decoration_id,
+            'quantity_editable_decoration' => $request->quantity_editable_decoration
         ]);
-
         // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
             'status' => 'Success',
@@ -113,9 +114,8 @@ class DecorationController extends Controller
             'description_decoration' => 'required',
             'price_decoration' => 'required',
             'categorie_decoration_id' => 'required',
+            'quantity_editable_decoration' => 'required',
         ]);
-
-
 
         $filename = "";
 
@@ -140,7 +140,8 @@ class DecorationController extends Controller
             'name_decoration' => $request->name_decoration,
             'description_decoration' => $request->description_decoration,
             'price_decoration' => $request->price_decoration,
-            'picture_decoration' => $filename,
+            'picture_decoration' => $filename ?: $decoration->picture_decoration,
+            'quantity_editable_decoration' => $request->quantity_editable_decoration,
             'categorie_decoration_id' => $request->categorie_decoration_id,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
