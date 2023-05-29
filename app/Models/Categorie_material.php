@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Categorie_material extends Model
 {
     use HasFactory;
-    protected $fillable = ['name_categorie_material'];
+    protected $fillable = ['name_categorie_material', 'included_kit'];
 
     public function materials()
     {

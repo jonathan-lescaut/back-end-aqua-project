@@ -31,10 +31,12 @@ class CategorieMaterialController extends Controller
     {
         $request->validate([
             'name_categorie_material' => 'required|max:100',
+            'included_kit' => 'required',
         ]);
         // On crée un nouvel utilisateur
         $categorie_material = Categorie_material::create([
             'name_categorie_material' => $request->name_categorie_material,
+            'included_kit' => $request->included_kit,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
@@ -52,7 +54,6 @@ class CategorieMaterialController extends Controller
     public function show(Categorie_material $categorie_material)
     {
         return response()->json($categorie_material);
-
     }
     /**
      * Update the specified resource in storage.
@@ -65,10 +66,12 @@ class CategorieMaterialController extends Controller
     {
         $this->validate($request, [
             'name_categorie_material' => 'required|max:100',
+            'included_kit' => 'required',
         ]);
         // On crée un nouvel utilisateur
         $categorie_material->update([
             'name_categorie_material' => $request->name_categorie_material,
+            'included_kit' => $request->included_kit,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([

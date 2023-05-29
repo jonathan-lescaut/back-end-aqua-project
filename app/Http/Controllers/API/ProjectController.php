@@ -35,6 +35,19 @@ class ProjectController extends Controller
         // if (Auth::user()->roles != 'ROLE_ADMIN') {
         //     abort(403, 'Action non autorisée.');
         // }
+
+        // $loggedInUser = auth()->user();
+
+        // // Vérifiez si l'utilisateur est connecté
+        // if (!$loggedInUser) {
+        //     return response()->json(['message' => 'Unauthorized'], 401);
+        // }
+
+        // // Vérifiez si l'utilisateur est autorisé à accéder à la ressource
+        // if ($loggedInUser->id !== $id) {
+        //     return response()->json(['message' => 'Forbidden'], 403);
+        // }
+
         // On récupère tous les projet
         $project = DB::table('projects')->where('projects.user_id', '=', $id)->get();
         // On retourne les informations des projets en JSON
@@ -128,29 +141,32 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+
+        $user = Auth::user();
         $request->validate([
             'title_project' => 'required|max:100',
             'start_project' => 'required',
-            'c°' => 'nullable',
-            'ph' => 'nullable',
-            'kh' => 'nullable',
-            'gh' => 'nullable',
-            'no2' => 'nullable',
-            'no3' => 'nullable',
-            'user_id' => 'required',
-
+            'user_id' => 'required'
+            // 'c°' => 'nullable',
+            // 'ph' => 'nullable',
+            // 'kh' => 'nullable',
+            // 'gh' => 'nullable',
+            // 'no2' => 'nullable',
+            // 'no3' => 'nullable'
         ]);
+
         // On crée un nouvel project
         $project = Project::create([
             'title_project' => $request->title_project,
             'start_project' => $request->start_project,
-            'c°' => $request->c°,
-            'ph' => $request->ph,
-            'kh' => $request->kh,
-            'gh' => $request->gh,
-            'no2' => $request->no2,
-            'no3' => $request->no3,
-            'user_id' => $request->user_id,
+            'user_id' => $request->user_id
+
+            // 'c°' => $request->c°,
+            // 'ph' => $request->ph,
+            // 'kh' => $request->kh,
+            // 'gh' => $request->gh,
+            // 'no2' => $request->no2,
+            // 'no3' => $request->no3,
         ]);
 
         // table pivot LIVING
@@ -162,31 +178,14 @@ class ProjectController extends Controller
         //     }
         // }
         // table pivot LIVING
-        $livings[] = $request->living_id;
+        $livings[] = $request->input('living_id', []);;
         if (!empty($livings)) {
             $project->livings()->syncWithoutDetaching($livings);
         }
-        // table pivot MATERIAL
-        // $materials[] = $request->material_id;
-        // if (!empty($materials)) {
-        //     for ($i = 0; $i < count($materials); $i++) {
-        //         $material = Material::find($materials[$i]);
-        //         $project->materials()->attach($material);
-        //     }
-        // }
         $materials = $request->input('material_id', []);
         if (!empty($materials)) {
             $project->materials()->syncWithoutDetaching($materials);
         }
-
-        // table pivot DECORATION
-        // $decorations[] = $request->decoration_id;
-        // if (!empty($decorations)) {
-        //     for ($i = 0; $i < count($decorations); $i++) {
-        //         $decoration = Decoration::find($decorations[$i]);
-        //         $project->decorations()->attach($decoration);
-        //     }
-        // }
         $decorations = $request->input('decoration_id', []);
         if (!empty($decorations)) {
             $project->decorations()->syncWithoutDetaching($decorations);

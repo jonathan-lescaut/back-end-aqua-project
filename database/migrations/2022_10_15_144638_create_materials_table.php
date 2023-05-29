@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name_material');
-            $table->string('description_material');
+            $table->longText('description_material');
             $table->decimal('price_material', 12, 2);
             $table->string('picture_material');
             $table->timestamps();
             $table->foreign('id')
-            ->references('id')
-            ->on('categorie_materials');
+                ->references('id')
+                ->on('categorie_materials');
         });
     }
 

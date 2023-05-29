@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('decorations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name_decoration');
-            $table->string('description_decoration');
+            $table->longText('description_decoration');
             $table->decimal('price_decoration', 12, 2);
             $table->string('picture_decoration');
             $table->timestamps();
             $table->foreign('id')
-            ->references('id')
-            ->on('categorie_decorations');
+                ->references('id')
+                ->on('categorie_decorations');
         });
     }
 

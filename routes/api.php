@@ -39,20 +39,21 @@ Route::controller(AuthController::class)->group(function () {
 // Route::middleware('CheckRole')->group(function () {
 // });
 
-
-Route::middleware('CheckRole')->group(function () {
-    Route::apiResource("users", UserController::class);
-    Route::apiResource('categorie_decoration', CategorieDecorationController::class);
-    Route::apiResource('categorie_living', CategorieLivingController::class);
-    Route::apiResource('categorie_material', CategorieMaterialController::class);
-    Route::apiResource('opinion', OpinionController::class);
-    // Route::apiResource('living', LivingController::class);
-    // Route::apiResource('material', MaterialController::class);
-    // Route::apiResource('decoration', DecorationController::class);
+Route::controller(MaterialController::class)->group(function () {
+    Route::get('material/categoriekit', 'indexCategorieIncludeKit')->name('indexCategorieIncludeKit');
 });
 
+Route::apiResource("users", UserController::class);
+Route::apiResource('categorie_decoration', CategorieDecorationController::class);
+Route::apiResource('categorie_living', CategorieLivingController::class);
+Route::apiResource('categorie_material', CategorieMaterialController::class);
+Route::apiResource('opinion', OpinionController::class);
+Route::apiResource('living', LivingController::class);
+Route::apiResource('material', MaterialController::class);
+Route::apiResource('decoration', DecorationController::class);
+
 Route::controller(DecorationController::class)->group(function () {
-    Route::get('decoration', 'index')->middleware('CheckRole');
+    Route::get('decoration', 'index');
     Route::post('decoration', 'store')->middleware('CheckRole');
     Route::get('decoration/{decoration}', 'show')->middleware('CheckRole');
     Route::post('decoration/{decoration}', 'update')->middleware('CheckRole');
@@ -60,7 +61,7 @@ Route::controller(DecorationController::class)->group(function () {
 });
 
 Route::controller(MaterialController::class)->group(function () {
-    Route::get('material', 'index')->middleware('CheckRole');
+    Route::get('material', 'index');
     Route::post('material', 'store')->middleware('CheckRole');
     Route::get('material/{material}', 'show')->middleware('CheckRole');
     Route::post('material/{material}', 'update')->middleware('CheckRole');
@@ -68,27 +69,39 @@ Route::controller(MaterialController::class)->group(function () {
 });
 
 Route::controller(LivingController::class)->group(function () {
-    Route::get('living', 'index')->middleware('CheckRole');
+    Route::get('living', 'index');
     Route::post('living', 'store')->middleware('CheckRole');
     Route::get('living/{living}', 'show')->middleware('CheckRole');
     Route::post('living/{living}', 'update')->middleware('CheckRole');
     Route::delete('living/{living}', 'destroy')->middleware('CheckRole');
 });
 
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('project/user/{user}', [ProjectController::class, 'indexUser'])->name('indexUser');
+// });
+// Route::get('project/user/{user}', function ($user) {
+//     return response()->json(['data' => '...'])->header('Access-Control-Allow-Origin', '*');
+// })->middleware(\Fruitcake\Cors\HandleCors::class);
 
-Route::apiResource('project', ProjectController::class);
-Route::get('project/user/{user}', [ProjectController::class, 'indexUser'])->name('indexUser');
-Route::get('project/living/{project}', [ProjectController::class, 'indexLiving'])->name('indexLiving');
-Route::get('project/material/{project}', [ProjectController::class, 'indexMaterial'])->name('indexMaterial');
-Route::get('project/decoration/{project}', [ProjectController::class, 'indexDecoration'])->name('indexDecoration');
-Route::delete('project/{project}/living/{living}', [ProjectController::class, 'destroyLiving'])->name('destroyLiving');
-Route::delete('project/{project}/material/{material}', [ProjectController::class, 'destroyMaterial'])->name('destroyMaterial');
-Route::delete('project/{project}/decoration/{decoration}', [ProjectController::class, 'destroyDecoration'])->name('destroyDecoration');
-Route::put('project/{project}/living/{living}/quantity', [ProjectController::class, 'updateLivingQuantity'])->name('updateLivingQuantity');
-Route::put('project/{project}/material/{material}/quantity', [ProjectController::class, 'updateMaterialQuantity'])->name('updateMaterialQuantity');
-Route::put('project/{project}/decoration/{decoration}/quantity', [ProjectController::class, 'updateDecorationQuantity'])->name('updateDecorationQuantity');
+// Route::apiResource('project', ProjectController::class);
+Route::middleware('auth:api')->apiResource('project', ProjectController::class);
+
+Route::post('project', [ProjectController::class, 'store'])->name('storeProject')->middleware(\Fruitcake\Cors\HandleCors::class);
+// Route::get('project/user/{user}', [ProjectController::class, 'indexUser'])->name('indexUser');
 
 
-Route::get('decoration/categorie/{categorie_decoration}', [DecorationController::class, 'indexCategorie'])->name('indexCategorie');
-Route::get('material/categorie/{categorie_material}', [MaterialController::class, 'indexCategorie'])->name('indexCategorie');
-Route::get('living/categorie/{categorie_living}', [LivingController::class, 'indexCategorie'])->name('indexCategorie');
+Route::get('project/user/{user}', [ProjectController::class, 'indexUser'])->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::get('project/living/{project}', [ProjectController::class, 'indexLiving'])->name('indexLiving')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::get('project/material/{project}', [ProjectController::class, 'indexMaterial'])->name('indexMaterial')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::get('project/decoration/{project}', [ProjectController::class, 'indexDecoration'])->name('indexDecoration')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::delete('project/{project}/living/{living}', [ProjectController::class, 'destroyLiving'])->name('destroyLiving')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::delete('project/{project}/material/{material}', [ProjectController::class, 'destroyMaterial'])->name('destroyMaterial')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::delete('project/{project}/decoration/{decoration}', [ProjectController::class, 'destroyDecoration'])->name('destroyDecoration')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::put('project/{project}/living/{living}/quantity', [ProjectController::class, 'updateLivingQuantity'])->name('updateLivingQuantity')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::put('project/{project}/material/{material}/quantity', [ProjectController::class, 'updateMaterialQuantity'])->name('updateMaterialQuantity')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::put('project/{project}/decoration/{decoration}/quantity', [ProjectController::class, 'updateDecorationQuantity'])->name('updateDecorationQuantity')->middleware(\Fruitcake\Cors\HandleCors::class);
+
+
+Route::get('decoration/categorie/{categorie_decoration}', [DecorationController::class, 'indexCategorie'])->name('indexCategorie')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::get('material/categorie/{categorie_material}', [MaterialController::class, 'indexCategorie'])->name('indexCategorie')->middleware(\Fruitcake\Cors\HandleCors::class);
+Route::get('living/categorie/{categorie_living}', [LivingController::class, 'indexCategorie'])->name('indexCategorie')->middleware(\Fruitcake\Cors\HandleCors::class);

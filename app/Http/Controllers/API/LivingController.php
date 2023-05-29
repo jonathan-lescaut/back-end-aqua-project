@@ -54,6 +54,8 @@ class LivingController extends Controller
             'price_living' => 'required',
             'categorie_living_id' => 'required',
             'quantity_editable_living' => 'required',
+            'unique_living_category' => 'required',
+
         ]);
 
         $filename = "";
@@ -78,6 +80,10 @@ class LivingController extends Controller
             'price_living' => $request->price_living,
             'categorie_living_id' => $request->categorie_living_id,
             'quantity_editable_living' => $request->quantity_editable_living,
+            'unique_living_category' => $request->unique_living_category,
+            'liter_min' => $request->liter_min,
+            'number_max' => $request->number_max,
+            'number_min' => $request->number_min,
             'picture_living' => $filename,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
@@ -113,6 +119,8 @@ class LivingController extends Controller
             'price_living' => 'required',
             'categorie_living_id' => 'required',
             'quantity_editable_living' => 'required',
+            'unique_living_category' => 'required',
+
         ]);
         $filename = "";
         if ($request->hasFile('picture_living')) {
@@ -136,6 +144,10 @@ class LivingController extends Controller
             'picture_living' => $filename ?: $living->picture_living, // use existing picture if no new file is uploaded
             'categorie_living_id' => $request->categorie_living_id,
             'quantity_editable_living' => $request->quantity_editable_living,
+            'unique_living_category' => $request->unique_living_category,
+            'liter_min' => $request->liter_min,
+            'number_min' => $request->number_min,
+            'number_max' => $request->number_max,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([

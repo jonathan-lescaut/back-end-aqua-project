@@ -19,11 +19,9 @@ class MaterialController extends Controller
     {
         // On récupère tous les caté
         $materials = DB::table('materials')
-
             ->join('categorie_materials', 'materials.categorie_material_id', '=', 'categorie_materials.id')
             ->select('materials.*', 'categorie_materials.name_categorie_material')
             ->get();
-
         return response()->json([
             'status' => 'Success',
             'data' => $materials,
@@ -36,7 +34,16 @@ class MaterialController extends Controller
             ->select('materials.*')
             ->where('categorie_materials.id', '=', $categorie_material->id)
             ->get();
-
+        return response()->json([
+            'status' => 'Success',
+            'data' => $categorie_material,
+        ]);
+    }
+    public function indexCategorieIncludeKit(Categorie_material $categorie_material)
+    {
+        $categorie_material = DB::table('categorie_materials')
+            ->where('categorie_materials.included_kit', '=', 1)
+            ->get();
         return response()->json([
             'status' => 'Success',
             'data' => $categorie_material,
@@ -55,9 +62,9 @@ class MaterialController extends Controller
             'name_material' => 'required|max:100',
             'description_material' => 'required',
             'price_material' => 'required',
-            'picture_material' => 'required',
             'categorie_material_id' => 'required',
             'quantity_editable_material' => 'required',
+            'kit' => 'required',
         ]);
 
         $filename = "";
@@ -82,6 +89,9 @@ class MaterialController extends Controller
             'picture_material' => $filename,
             'categorie_material_id' => $request->categorie_material_id,
             'quantity_editable_material' => $request->quantity_editable_material,
+            'kit' => $request->kit,
+            'liter' => $request->liter,
+            'content_kit' => $request->content_kit,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
@@ -116,6 +126,7 @@ class MaterialController extends Controller
             'price_material' => 'required',
             'categorie_material_id' => 'required',
             'quantity_editable_material' => 'required',
+            'kit' => 'required',
         ]);
 
         $filename = "";
@@ -137,9 +148,12 @@ class MaterialController extends Controller
             'name_material' => $request->name_material,
             'description_material' => $request->description_material,
             'price_material' => $request->price_material,
-            'picture_material' => $filename,
+            'picture_material' => $filename ?: $material->picture_material, // use existing picture if no new file is uploaded
             'quantity_editable_material' => $request->quantity_editable_material,
             'categorie_material_id' => $request->categorie_material_id,
+            'kit' => $request->kit,
+            'liter' => $request->liter,
+            'content_kit' => $request->content_kit,
         ]);
         // On retourne les informations du nouvel utilisateur en JSON
         return response()->json([
